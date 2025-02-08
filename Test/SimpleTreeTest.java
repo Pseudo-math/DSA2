@@ -176,4 +176,223 @@ class SimpleTreeTest {
         assertTrue(allNodes.isEmpty(), "Метод GetAllNodes для пустого дерева должен возвращать пустой список!");
     }
 
+    @Test
+    public void testUpdateNodesLevels_EmptyTree() {
+        SimpleTree<Integer> tree = new SimpleTree<>(null);
+        tree.UpdateNodesLevels();
+        assertEquals(0, tree.Count(), "Дерево пустое, уровни узлов обновить не требуется.");
+    }
+
+    @Test
+    public void testUpdateNodesLevels_SingleRootNode() {
+        SimpleTreeNode<Integer> root = new SimpleTreeNode<>(1, null);
+        SimpleTree<Integer> tree = new SimpleTree<>(root);
+        tree.UpdateNodesLevels();
+        assertEquals(0, root.Level, "Уровень корня должен быть 0.");
+    }
+
+    @Test
+    public void testUpdateNodesLevels_MultipleLevels() {
+        // Создаем узлы дерева
+        SimpleTreeNode<Integer> root = new SimpleTreeNode<>(1, null);
+        SimpleTreeNode<Integer> child1 = new SimpleTreeNode<>(2, root);
+        SimpleTreeNode<Integer> child2 = new SimpleTreeNode<>(3, root);
+        SimpleTreeNode<Integer> child3 = new SimpleTreeNode<>(4, child1);
+
+        // Добавляем узлы
+        SimpleTree<Integer> tree = new SimpleTree<>(root);
+        tree.AddChild(root, child1);
+        tree.AddChild(root, child2);
+        tree.AddChild(child1, child3);
+
+        // Обновляем уровни
+        tree.UpdateNodesLevels();
+
+        // Проверяем уровни
+        assertEquals(0, root.Level, "Уровень корня должен быть 0.");
+        assertEquals(1, child1.Level, "Уровень первого потомка должен быть 1.");
+        assertEquals(1, child2.Level, "Уровень второго потомка должен быть 1.");
+        assertEquals(2, child3.Level, "Уровень дочернего узла второго уровня должен быть 2.");
+    }
+
+    @Test
+    public void testUpdateNodesLevels_AfterMoveNode() {
+        // Создаем узлы дерева
+        SimpleTreeNode<Integer> root = new SimpleTreeNode<>(1, null);
+        SimpleTreeNode<Integer> child1 = new SimpleTreeNode<>(2, root);
+        SimpleTreeNode<Integer> child2 = new SimpleTreeNode<>(3, root);
+        SimpleTreeNode<Integer> child3 = new SimpleTreeNode<>(4, child1);
+
+        // Добавляем узлы
+        SimpleTree<Integer> tree = new SimpleTree<>(root);
+        tree.AddChild(root, child1);
+        tree.AddChild(root, child2);
+        tree.AddChild(child1, child3);
+
+        // Перемещаем узел child3 под child2
+        tree.MoveNode(child3, child2);
+
+        // Проверяем уровни после перемещения
+        assertEquals(2, child3.Level, "Уровень перемещенного узла должен быть обновлен.");
+        assertEquals(1, child2.Level, "Уровень нового родителя должен остаться прежним.");
+    }
+
+    @Test
+    public void testUpdateNodesLevels_ComplexTree() {
+        // Создаем сложное дерево
+        SimpleTreeNode<Integer> root = new SimpleTreeNode<>(1, null);
+        SimpleTreeNode<Integer> child1 = new SimpleTreeNode<>(2, root);
+        SimpleTreeNode<Integer> child2 = new SimpleTreeNode<>(3, root);
+        SimpleTreeNode<Integer> child3 = new SimpleTreeNode<>(4, child1);
+        SimpleTreeNode<Integer> child4 = new SimpleTreeNode<>(5, child1);
+        SimpleTreeNode<Integer> child5 = new SimpleTreeNode<>(6, child3);
+
+        // Добавляем узлы
+        SimpleTree<Integer> tree = new SimpleTree<>(root);
+        tree.AddChild(root, child1);
+        tree.AddChild(root, child2);
+        tree.AddChild(child1, child3);
+        tree.AddChild(child1, child4);
+        tree.AddChild(child3, child5);
+
+        // Обновляем уровни
+        tree.UpdateNodesLevels();
+
+        // Проверяем уровни
+        assertEquals(0, root.Level, "Уровень корня должен быть 0.");
+        assertEquals(1, child1.Level, "Уровень первого потомка должен быть 1.");
+        assertEquals(1, child2.Level, "Уровень второго потомка должен быть 1.");
+        assertEquals(2, child3.Level, "Уровень дочернего узла второго уровня должен быть 2.");
+        assertEquals(2, child4.Level, "Уровень второго дочернего узла второго уровня должен быть 2.");
+        assertEquals(3, child5.Level, "Уровень дочернего узла третьего уровня должен быть 3.");
+    }
+
+    @Test
+    public void testMoveNode_UpdateLevelsCorrectly() {
+        // Создаем дерево
+        SimpleTreeNode<Integer> root = new SimpleTreeNode<>(1, null);
+        SimpleTreeNode<Integer> child1 = new SimpleTreeNode<>(2, root);
+        SimpleTreeNode<Integer> child2 = new SimpleTreeNode<>(3, root);
+        SimpleTreeNode<Integer> child3 = new SimpleTreeNode<>(4, child1);
+
+        SimpleTree<Integer> tree = new SimpleTree<>(root);
+
+        tree.AddChild(root, child1);
+        tree.AddChild(root, child2);
+        tree.AddChild(child1, child3);
+
+        // Проверяем начальные уровни
+        assertEquals(0, root.Level, "Уровень корня должен быть 0.");
+        assertEquals(1, child1.Level, "Уровень child1 должен быть 1.");
+        assertEquals(1, child2.Level, "Уровень child2 должен быть 1.");
+        assertEquals(2, child3.Level, "Уровень child3 должен быть 2.");
+
+        // Перемещаем узел child3 под child2
+        tree.MoveNode(child3, child2);
+
+        // Проверяем уровни после перемещения
+        assertEquals(0, root.Level, "Уровень корня должен быть 0.");
+        assertEquals(1, child1.Level, "Уровень child1 должен остаться 1.");
+        assertEquals(1, child2.Level, "Уровень child2 должен остаться 1.");
+        assertEquals(2, child3.Level, "Уровень child3 должен обновиться до 2.");
+        assertEquals(child2, child3.Parent, "Родителем child3 должен стать child2.");
+    }
+
+    @Test
+    public void testMoveNode_ComplexTree() {
+        // Создаем дерево
+        SimpleTreeNode<Integer> root = new SimpleTreeNode<>(1, null);
+        SimpleTreeNode<Integer> child1 = new SimpleTreeNode<>(2, root);
+        SimpleTreeNode<Integer> child2 = new SimpleTreeNode<>(3, root);
+        SimpleTreeNode<Integer> child3 = new SimpleTreeNode<>(4, child1);
+        SimpleTreeNode<Integer> child4 = new SimpleTreeNode<>(5, child3);
+
+        SimpleTree<Integer> tree = new SimpleTree<>(root);
+
+        tree.AddChild(root, child1);
+        tree.AddChild(root, child2);
+        tree.AddChild(child1, child3);
+        tree.AddChild(child3, child4);
+
+        // Проверяем начальные уровни
+        assertEquals(0, root.Level, "Уровень корня должен быть 0.");
+        assertEquals(1, child1.Level, "Уровень child1 должен быть 1.");
+        assertEquals(1, child2.Level, "Уровень child2 должен быть 1.");
+        assertEquals(2, child3.Level, "Уровень child3 должен быть 2.");
+        assertEquals(3, child4.Level, "Уровень child4 должен быть 3.");
+
+        // Перемещаем узел child3 под child2
+        tree.MoveNode(child3, child2);
+
+        // Проверяем уровни после перемещения
+        assertEquals(0, root.Level, "Уровень корня должен быть 0.");
+        assertEquals(1, child1.Level, "Уровень child1 должен остаться 1.");
+        assertEquals(1, child2.Level, "Уровень child2 должен остаться 1.");
+        assertEquals(2, child3.Level, "Уровень child3 должен обновиться до 2.");
+        assertEquals(3, child4.Level, "Уровень child4 должен обновиться до 3.");
+        assertEquals(child2, child3.Parent, "Родителем child3 должен стать child2.");
+    }
+
+    @Test
+    public void testComplexTreeOperations() {
+        // Создаем узлы дерева
+        SimpleTreeNode<Integer> root = new SimpleTreeNode<>(1, null);
+        SimpleTreeNode<Integer> child1 = new SimpleTreeNode<>(2, root);
+        SimpleTreeNode<Integer> child2 = new SimpleTreeNode<>(3, root);
+        SimpleTreeNode<Integer> child3 = new SimpleTreeNode<>(4, child1);
+        SimpleTreeNode<Integer> child4 = new SimpleTreeNode<>(5, child1);
+        SimpleTreeNode<Integer> child5 = new SimpleTreeNode<>(6, child3);
+
+        // Создаем дерево и добавляем узлы
+        SimpleTree<Integer> tree = new SimpleTree<>(root);
+        tree.AddChild(root, child1);
+        tree.AddChild(root, child2);
+        tree.AddChild(child1, child3);
+        tree.AddChild(child1, child4);
+        tree.AddChild(child3, child5);
+
+        // Проверяем начальные уровни
+        assertEquals(0, root.Level, "Уровень корня должен быть 0.");
+        assertEquals(1, child1.Level, "Уровень child1 должен быть 1.");
+        assertEquals(1, child2.Level, "Уровень child2 должен быть 1.");
+        assertEquals(2, child3.Level, "Уровень child3 должен быть 2.");
+        assertEquals(2, child4.Level, "Уровень child4 должен быть 2.");
+        assertEquals(3, child5.Level, "Уровень child5 должен быть 3.");
+
+        // Перемещаем узел child3 под child2
+        tree.MoveNode(child3, child2);
+        assertEquals(2, child3.Level, "Уровень child3 после перемещения должен быть 2.");
+        assertEquals(3, child5.Level, "Уровень child5 после перемещения должен быть 3.");
+
+        // Удаляем узел child4
+        tree.DeleteNode(child4);
+        List<SimpleTreeNode<Integer>> allNodesAfterDelete = tree.GetAllNodes();
+        assertFalse(allNodesAfterDelete.contains(child4), "child4 должен быть удален из дерева.");
+
+        // Находим узел по значению
+        List<SimpleTreeNode<Integer>> foundNodes = tree.FindNodesByValue(3);
+        assertEquals(1, foundNodes.size(), "Должен быть найден ровно один узел со значением 3.");
+        assertEquals(child2, foundNodes.get(0), "Найденный узел должен быть равен child2.");
+
+        // Проверяем общее количество узлов
+        assertEquals(5, tree.Count(), "Общее количество узлов должно быть 5.");
+
+        // Проверяем количество листьев
+        assertEquals(2, tree.LeafCount(), "Количество листьев должно быть 2 (child5 и child2).");
+
+        // Добавляем новый узел
+        SimpleTreeNode<Integer> child6 = new SimpleTreeNode<>(7, root);
+        tree.AddChild(root, child6);
+        assertEquals(1, child6.Level, "Уровень нового узла child6 должен быть 1.");
+
+        // Проверяем дерево после всех операций
+        List<SimpleTreeNode<Integer>> allNodes = tree.GetAllNodes();
+        assertTrue(allNodes.contains(root), "Дерево должно содержать корень.");
+        assertTrue(allNodes.contains(child1), "Дерево должно содержать child1.");
+        assertTrue(allNodes.contains(child2), "Дерево должно содержать child2.");
+        assertTrue(allNodes.contains(child3), "Дерево должно содержать child3.");
+        assertTrue(allNodes.contains(child5), "Дерево должно содержать child5.");
+        assertTrue(allNodes.contains(child6), "Дерево должно содержать child6.");
+    }
 }
+

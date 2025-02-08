@@ -5,12 +5,14 @@ public class SimpleTreeNode<T>
     public T NodeValue; // значение в узле
     public SimpleTreeNode<T> Parent; // родитель или null для корня
     public List<SimpleTreeNode<T>> Children; // список дочерних узлов или null
+    public int Level;
 
     public SimpleTreeNode(T val, SimpleTreeNode<T> parent)
     {
         NodeValue = val;
         Parent = parent;
         Children = null;
+        Level = 0;
     }
 }
 
@@ -33,6 +35,7 @@ class SimpleTree<T>
             ParentNode.Children = new ArrayList<SimpleTreeNode<T>>();
         ParentNode.Children.add(NewChild);
         NewChild.Parent = ParentNode;
+        NewChild.Level = NewChild.Parent.Level + 1;
     }
 
     public void DeleteNode(SimpleTreeNode<T> NodeToDelete)
@@ -78,6 +81,7 @@ class SimpleTree<T>
     {
         DeleteNode(OriginalNode);
         AddChild(NewParent, OriginalNode);
+        (new SimpleTree<T>(OriginalNode)).UpdateNodesLevels();
     }
 
     public int Count()
@@ -85,7 +89,7 @@ class SimpleTree<T>
         int count = 0;
         if (Root != null)
             count++;
-        if (Root == null ||Root.Children == null || Root.Children.isEmpty()) {
+        if (Root == null || Root.Children == null || Root.Children.isEmpty()) {
             return count;
         }
         for (var currentNode : Root.Children) {
@@ -101,9 +105,23 @@ class SimpleTree<T>
             leafCount++;
             return leafCount;
         }
+        if (Root == null) {
+            return leafCount;
+        }
         for (var currentNode : Root.Children) {
             leafCount += ((new SimpleTree<T>(currentNode)).LeafCount());
         }
         return leafCount;
+    }
+    public void UpdateNodesLevels()
+    {
+        if (Root != null && Root.Parent != null)
+            Root.Level = Root.Parent.Level + 1;
+        if (Root == null || Root.Children == null || Root.Children.isEmpty()) {
+            return;
+        }
+        for (var currentNode : Root.Children) {
+            (new SimpleTree<T>(currentNode)).UpdateNodesLevels();
+        }
     }
 }
