@@ -156,4 +156,24 @@ class SimpleTreeTest {
         assertEquals(2, tree.Count(), "Количество узлов в дереве некорректно после удаления поддерева!");
         assertEquals(1, tree.LeafCount(), "Количество листьев некорректно после удаления поддерева!");
     }
+
+    @Test
+    void testCountInEmptyTree() {
+        // Создаём пустое дерево
+        SimpleTree<Integer> tree = new SimpleTree<>(null);
+
+        // Проверяем, что количество узлов равно 0
+        assertEquals(0, tree.Count(), "Количество узлов в пустом дереве должно быть 0!");
+    }
+
+    @Test
+    void testGetAllNodesInEmptyTree() {
+        // Создаём пустое дерево
+        SimpleTree<Integer> tree = new SimpleTree<>(null);
+
+        // Проверяем, что список всех узлов пуст
+        List<SimpleTreeNode<Integer>> allNodes = tree.GetAllNodes();
+        assertTrue(allNodes.isEmpty(), "Метод GetAllNodes для пустого дерева должен возвращать пустой список!");
+    }
+
 }

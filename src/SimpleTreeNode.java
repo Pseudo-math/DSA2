@@ -48,7 +48,8 @@ class SimpleTree<T>
     public List<SimpleTreeNode<T>> GetAllNodes()
     {
         var allNodes = new ArrayList<SimpleTreeNode<T>>();
-        allNodes.add(Root);
+        if (Root != null)
+            allNodes.add(Root);
         if (Root == null || Root.Children == null || Root.Children.isEmpty()) {
             return allNodes;
         }
@@ -82,7 +83,8 @@ class SimpleTree<T>
     public int Count()
     {
         int count = 0;
-        count++;
+        if (Root != null)
+            count++;
         if (Root == null ||Root.Children == null || Root.Children.isEmpty()) {
             return count;
         }
@@ -95,7 +97,7 @@ class SimpleTree<T>
     public int LeafCount()
     {
         int leafCount = 0;
-        if (Root == null || Root.Children == null || Root.Children.isEmpty()) {
+        if (Root != null && (Root.Children == null || Root.Children.isEmpty())) {
             leafCount++;
             return leafCount;
         }
