@@ -177,6 +177,59 @@ class SimpleTreeTest {
     }
 
     @Test
+    public void testAddChild_EmptyTree() {
+        // Создаем пустое дерево
+        SimpleTree<Integer> tree = new SimpleTree<>(null);
+
+        // Добавляем узел в пустое дерево
+        SimpleTreeNode<Integer> newChild = new SimpleTreeNode<>(1, null);
+        tree.AddChild(null, newChild);
+
+        // Проверяем, что дерево больше не пустое
+        assertNotNull(tree.Root, "Корень должен быть установлен после добавления узла.");
+        assertEquals(newChild, tree.Root, "Добавленный узел должен стать корнем.");
+        assertEquals(0, tree.Root.Level, "Уровень корня должен быть 0.");
+    }
+
+    @Test
+    public void testFindNodesByValue_EmptyTree() {
+        // Создаем пустое дерево
+        SimpleTree<Integer> tree = new SimpleTree<>(null);
+
+        // Пытаемся найти узел со значением 1
+        List<SimpleTreeNode<Integer>> foundNodes = tree.FindNodesByValue(1);
+
+        // Проверяем, что ничего не найдено
+        assertTrue(foundNodes.isEmpty(), "В пустом дереве не должно быть найдено узлов.");
+    }
+
+    @Test
+    public void testMoveNode_EmptyTree() {
+        // Создаем пустое дерево
+        SimpleTree<Integer> tree = new SimpleTree<>(null);
+
+        // Пытаемся переместить узел в пустом дереве
+        SimpleTreeNode<Integer> nodeToMove = new SimpleTreeNode<>(1, null);
+        SimpleTreeNode<Integer> newParent = new SimpleTreeNode<>(2, null);
+
+        assertThrows(NullPointerException.class, () -> {
+            tree.MoveNode(nodeToMove, newParent);
+        }, "В пустом дереве операция MoveNode должна выбросить исключение.");
+    }
+
+    @Test
+    public void testLeafCount_EmptyTree() {
+        // Создаем пустое дерево
+        SimpleTree<Integer> tree = new SimpleTree<>(null);
+
+        // Проверяем количество листьев
+        int leafCount = tree.LeafCount();
+
+        // Ожидаем 0 листьев
+        assertEquals(0, leafCount, "В пустом дереве количество листьев должно быть 0.");
+    }
+
+    @Test
     public void testUpdateNodesLevels_EmptyTree() {
         SimpleTree<Integer> tree = new SimpleTree<>(null);
         tree.UpdateNodesLevels();

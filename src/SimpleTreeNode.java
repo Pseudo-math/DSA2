@@ -28,7 +28,7 @@ class SimpleTree<T>
     public void AddChild(SimpleTreeNode<T> ParentNode, SimpleTreeNode<T> NewChild)
     {
         if (ParentNode == null) {
-            ParentNode = NewChild;
+            Root = NewChild;
             return;
         }
         if (ParentNode.Children == null)
