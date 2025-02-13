@@ -187,7 +187,6 @@ class BSTTest {
     }
 
 
-
     @Test
     void testRandomizedMinMax() {
         Random random = new Random();
@@ -210,6 +209,7 @@ class BSTTest {
         }
         assertEquals(expectedCount, singleNodeTree.Count());
     }
+
     @Test
     public void testDeleteAllNodes() {
         // Создаем дерево из 6 вершин вручную
@@ -234,7 +234,6 @@ class BSTTest {
         assertEquals(0, tree.Count(), "После удаления всех вершин дерево должно быть пустым");
         assertNull(tree.Root, "Корень должен быть null после удаления всех вершин");
     }
-
 
 
     @Test
@@ -273,6 +272,7 @@ class BSTTest {
         BSTFind<Integer> deletedNode = tree.FindNodeByKey(50);
         assertFalse(deletedNode.NodeHasKey, "Node 50 should not be in the tree anymore");
     }
+
     @Test
     void testDeleteNodeWhenSuccessorIsDirectRightChildWithRightChild() {
         BST<Integer> tree = new BST<>(new BSTNode<>(50, 50, null));
@@ -312,6 +312,7 @@ class BSTTest {
         assertNotNull(successorNode.Node.RightChild.LeftChild, "Node 60 should have a left child");
         assertEquals(57, successorNode.Node.RightChild.LeftChild.NodeKey, "Node 60's left child should be 57");
     }
+
     @Test
     void testDeleteNodeWhenSuccessorHasRightChildAndIsNotDirectRightChild() {
         BST<Integer> tree = new BST<>(new BSTNode<>(50, 50, null));
@@ -359,4 +360,56 @@ class BSTTest {
         assertEquals(57, tree.Root.RightChild.LeftChild.LeftChild.NodeKey, "60's left child should be 57");
     }
 
+    private BST<Integer> createBalancedTree() {
+        BST<Integer> tree = new BST<>(new BSTNode<>(40, 40, null));
+        int[] nodes = {20, 60, 10, 30, 50, 70, 5, 15, 25, 35, 45, 55, 65, 75};
+        for (int key : nodes) {
+            tree.AddKeyValue(key, key);
+        }
+        return tree;
+    }
+
+
+    @Test
+    void testDeleteNodesInIdenticalTrees() {
+        List<BST<Integer>> trees = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            trees.add(createBalancedTree());
+        }
+
+        int[] deleteKeys = {5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75};
+
+        for (int i = 0; i < 15; i++) {
+            BST<Integer> tree = trees.get(i);
+            int keyToDelete = deleteKeys[i];
+
+            assertTrue(tree.DeleteNodeByKey(keyToDelete), "Node " + keyToDelete + " should be deleted");
+
+            // Проверяем, что удаленный узел больше не найден
+            BSTFind<Integer> findDeleted = tree.FindNodeByKey(keyToDelete);
+            assertFalse(findDeleted.NodeHasKey, "Deleted node " + keyToDelete + " should not be in the tree");
+
+            // Проверяем, что структура дерева не сломалась
+            checkTreeStructure(tree.Root, null);
+        }
+    }
+
+    private void checkTreeStructure(BSTNode<Integer> node, BSTNode<Integer> expectedParent) {
+        if (node == null) return;
+
+        // Проверяем родителя
+        assertEquals(expectedParent, node.Parent, "Node " + node.NodeKey + " should have correct parent");
+
+        // Проверяем левый и правый потомок (если есть)
+        if (node.LeftChild != null) {
+            assertTrue(node.LeftChild.NodeKey < node.NodeKey, "Left child should be smaller than parent");
+            checkTreeStructure(node.LeftChild, node);
+        }
+
+        if (node.RightChild != null) {
+            assertTrue(node.RightChild.NodeKey > node.NodeKey, "Right child should be greater than parent");
+            checkTreeStructure(node.RightChild, node);
+        }
+    }
 }
+

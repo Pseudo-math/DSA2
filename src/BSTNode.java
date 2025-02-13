@@ -136,7 +136,11 @@ class BST<T>
             heir.Parent = deletingNode.Parent;
 
             heir.LeftChild = deletingNode.LeftChild;
+            if (heir.LeftChild != null)
+                heir.LeftChild.Parent = heir;
             heir.RightChild = deletingNode.RightChild;
+            if (heir.RightChild != null)
+                heir.RightChild.Parent = heir;
 
             Count--;
             return true;
