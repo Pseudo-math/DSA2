@@ -90,7 +90,7 @@ class BST<T>
 
     public BSTNode<T> FinMinMax(BSTNode<T> FromNode, boolean FindMax)
     {
-        if (Root == null)
+        if (FromNode == null)
             return null;
         if (FindMax && FromNode.RightChild == null || !FindMax && FromNode.LeftChild == null)
             return FromNode;
@@ -99,39 +99,64 @@ class BST<T>
         else
             return FinMinMax(FromNode.LeftChild, FindMax);
     }
-    private void ChangeNodeAndHeir(BSTNode<T> Node, BSTNode<T> Heir, boolean NodeIsLeft)
-    {
-        Heir.Parent = Node.Parent;
-        if (NodeIsLeft)
-            Node.Parent.LeftChild = Heir;
-        else
-            Node.Parent.RightChild = Heir;
-    }
-    public boolean DeleteNodeByKey(int key)
-    {
-        var whereNeedDelete = FindNodeByKey(key);
-        if (!whereNeedDelete.NodeHasKey)
+
+    public boolean DeleteNodeByKey(int key) {
+        BSTFind<T> foundNode = FindNodeByKey(key);
+        if (!foundNode.NodeHasKey || foundNode.Node == null)
             return false;
-        var deletingNode = whereNeedDelete.Node;
-        boolean deletingNodeIsLeft = deletingNode.Parent.LeftChild != null && deletingNode.Parent.LeftChild.NodeKey == key;
-        BSTNode<T> heir;
-        if (deletingNode.LeftChild == null && deletingNode.RightChild == null) {
-            heir = null;
-            if (deletingNodeIsLeft)
+
+        BSTNode<T> deletingNode = foundNode.Node;
+
+        if (deletingNode.LeftChild != null && deletingNode.RightChild != null) {
+            BSTNode<T> heir = FinMinMax(deletingNode.RightChild, false);
+
+            if (heir.RightChild != null) {
+                heir.RightChild.Parent = heir.Parent;
+                if (heir.Parent.LeftChild == heir) {
+                    heir.Parent.LeftChild = heir.RightChild;
+                } else {
+                    heir.Parent.RightChild = heir.RightChild;
+                }
+            } else {
+                if (heir.Parent.LeftChild == heir) {
+                    heir.Parent.LeftChild = null;
+                } else {
+                    heir.Parent.RightChild = null;
+                }
+            }
+
+            if (deletingNode.Parent == null) {
+                Root = heir;
+            } else if (deletingNode.Parent.LeftChild == deletingNode) {
                 deletingNode.Parent.LeftChild = heir;
-            else
+            } else {
                 deletingNode.Parent.RightChild = heir;
+            }
+
+            heir.Parent = deletingNode.Parent;
+
+            heir.LeftChild = deletingNode.LeftChild;
+            heir.RightChild = deletingNode.RightChild;
+
             Count--;
             return true;
         }
-        if (deletingNode.LeftChild == null || deletingNode.RightChild == null) {
-            heir = Objects.requireNonNullElse(deletingNode.LeftChild, deletingNode.RightChild);
-            ChangeNodeAndHeir(deletingNode, heir, deletingNodeIsLeft);
-            Count--;
-            return true;
+        BSTNode<T> child = (deletingNode.LeftChild != null) ? deletingNode.LeftChild : deletingNode.RightChild;
+
+        if (deletingNode.Parent == null) {
+            Root = child;
+        } else {
+            if (deletingNode.Parent.LeftChild == deletingNode) {
+                deletingNode.Parent.LeftChild = child;
+            } else {
+                deletingNode.Parent.RightChild = child;
+            }
         }
-        heir = FinMinMax(deletingNode.RightChild, false);
-        ChangeNodeAndHeir(deletingNode, heir, deletingNodeIsLeft);
+
+        if (child != null) {
+            child.Parent = deletingNode.Parent;
+        }
+
         Count--;
         return true;
     }
