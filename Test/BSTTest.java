@@ -110,7 +110,29 @@ class BSTTest {
     void testDeleteNodeByKeyInEmptyTree() {
         assertFalse(emptyTree.DeleteNodeByKey(5));
     }
+    @Test
+    void testFindMinMaxInEmptyTree() {
+        BST<Integer> emptyTree = new BST<>(null);
+        assertNull(emptyTree.FinMinMax(null, false), "Finding min in empty tree should return null");
+        assertNull(emptyTree.FinMinMax(null, true), "Finding max in empty tree should return null");
+    }
 
+    @Test
+    void testFindNodeInEmptyTree() {
+        BST<Integer> emptyTree = new BST<>(null);
+        BSTFind<Integer> result = emptyTree.FindNodeByKey(10);
+        assertFalse(result.NodeHasKey, "Key should not be found in empty tree");
+        assertNull(result.Node, "Node should be null in empty tree");
+    }
+
+    @Test
+    void testAddToEmptyTree() {
+        BST<Integer> tree = new BST<>(null);
+        assertTrue(tree.AddKeyValue(50, 50), "Adding to empty tree should succeed");
+        assertNotNull(tree.Root, "Root should be set after adding first element");
+        assertEquals(50, tree.Root.NodeKey, "Root should have correct key");
+        assertEquals(1, tree.Count(), "Tree should have one element after adding");
+    }
     @Test
     void testCount() {
         assertEquals(1, tree.Count());

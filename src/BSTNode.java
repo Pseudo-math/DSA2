@@ -77,6 +77,11 @@ class BST<T>
     public boolean AddKeyValue(int key, T val)
     {
         var whereNeedAdd = FindNodeByKey(key);
+        if (whereNeedAdd.Node == null) {
+            Root = new BSTNode<>(key, val, whereNeedAdd.Node);
+            Count++;
+            return true;
+        }
         if (whereNeedAdd.NodeHasKey)
             return false;
         var addingNode = new BSTNode<>(key, val, whereNeedAdd.Node);
