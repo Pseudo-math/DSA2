@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.util.stream.*;
 
 
 class BSTNode<T>
@@ -17,6 +18,12 @@ class BSTNode<T>
         Parent = parent;
         LeftChild = null;
         RightChild = null;
+    }
+
+    public boolean NodeEquals(BSTNode<T> otherNode) {
+        if (this == otherNode)
+            return true;
+        return NodeKey == otherNode.NodeKey && this.NodeValue.equals(otherNode.NodeValue);
     }
 }
 
@@ -168,6 +175,83 @@ class BST<T>
 
         Count--;
         return true;
+    }
+    public boolean TreeEquals(BST<T> otherTree)
+    {
+        if (Root == null && otherTree.Root == null)
+            return true;
+        if (Root == null || otherTree.Root == null)
+            return false;
+        if (!(Root.NodeEquals(otherTree.Root)))
+            return false;
+        var leftSubtreeThis = new BST<>(Root.LeftChild);
+        var rightSubtreeThis = new BST<>(Root.RightChild);
+        var leftSubtreeOther = new BST<>(otherTree.Root.LeftChild);
+        var rightSubtreeOther = new BST<>(otherTree.Root.RightChild);
+        return leftSubtreeThis.TreeEquals(leftSubtreeOther) &&
+               rightSubtreeThis.TreeEquals(rightSubtreeOther);
+    }
+    public ArrayList<LinkedList<BSTNode<T>>> WaysWithFixedLength(int length)
+    {
+        if (Root == null) {
+            return new ArrayList<>();
+        }
+        if (Root.LeftChild == null && Root.RightChild == null && length != 1) {
+            return new ArrayList<>();
+        }
+        var answer = new ArrayList<LinkedList<BSTNode<T>>>();
+        if (length == 1) {
+            var wayWithEnd = new LinkedList<BSTNode<T>>();
+            wayWithEnd.add(Root);
+            answer.add(wayWithEnd);
+            return answer;
+        }
+
+        if (length - 1 >= 1)
+        {
+            var subtreeLeft = new BST<>(Root.LeftChild);
+            var subtreeRight = new BST<>(Root.RightChild);
+            answer.addAll(subtreeLeft.WaysWithFixedLength(length - 1));
+            answer.addAll(subtreeRight.WaysWithFixedLength(length - 1));
+        }
+        answer.stream().forEach(list -> list.addFirst(Root));
+        return answer;
+    }
+    public static ArrayList<LinkedList<BSTNode<Integer>>> MaxSumWay(BST<Integer> tree)
+    {
+        if (tree.Root == null) {
+            return new ArrayList<>();
+        }
+        var answer = new ArrayList<LinkedList<BSTNode<Integer>>>();
+        MaxSumWayHelp(answer, tree.Root);
+        return answer;
+    }
+    public static int MaxSumWayHelp(ArrayList<LinkedList<BSTNode<Integer>>> answer, BSTNode<Integer> root)
+    {
+        if (root.LeftChild == null && root.RightChild == null) {
+            var wayWithEnd = new LinkedList<BSTNode<Integer>>();
+            wayWithEnd.add(root);
+            answer.add(wayWithEnd);
+            return root.NodeValue;
+        }
+        if (root.LeftChild != null && root.RightChild != null) {
+            var answerLeft = new ArrayList<LinkedList<BSTNode<Integer>>>();
+            var answerRight = new ArrayList<LinkedList<BSTNode<Integer>>>();
+            int leftMax = MaxSumWayHelp(answerLeft, root.LeftChild);
+            int rightMax = MaxSumWayHelp(answerRight, root.RightChild);
+            if (leftMax >= rightMax)
+                answer.addAll(answerLeft);
+            if (leftMax <= rightMax)
+                answer.addAll(answerRight);
+            answer.stream().forEach(list -> list.addFirst(root));
+            return Math.max(leftMax, rightMax) + root.NodeValue;
+        }
+        var answerChild = new ArrayList<LinkedList<BSTNode<Integer>>>();
+        var rootChild = (root.LeftChild != null) ? root.LeftChild : root.RightChild;
+        int childMax = MaxSumWayHelp(answerChild, rootChild);
+        answer.addAll(answerChild);
+        answer.stream().forEach(list -> list.addFirst(root));
+        return childMax + root.NodeValue;
     }
 
     public int Count()
