@@ -85,7 +85,7 @@ class BST<T>
     {
         var whereNeedAdd = FindNodeByKey(key);
         if (whereNeedAdd.Node == null) {
-            Root = new BSTNode<>(key, val, whereNeedAdd.Node);
+            Root = new BSTNode<>(key, val, null);
             Count++;
             return true;
         }
@@ -253,7 +253,46 @@ class BST<T>
         answer.stream().forEach(list -> list.addFirst(root));
         return childMax + root.NodeValue;
     }
+    public boolean IsSymmetrical() {
+        return false;
+    }
+    public ArrayList<BSTNode> WideAllNodes() {
+        if (Root == null)
+            return new ArrayList<>();
 
+        var answer = new ArrayList<BSTNode>();
+        Queue<BSTNode> notVisitedNodes = new LinkedList<>();
+        notVisitedNodes.add(Root);
+
+        while (!notVisitedNodes.isEmpty()) {
+            var current = notVisitedNodes.poll();
+            answer.add(current);
+
+            if (current.LeftChild != null)
+                notVisitedNodes.add(current.LeftChild);
+            if (current.RightChild != null)
+                notVisitedNodes.add(current.RightChild);
+        }
+
+        return answer;
+    }
+
+    public ArrayList<BSTNode> DeepAllNodes(int order) {
+        if (Root == null)
+            return new ArrayList<>();
+        var answer = new ArrayList<BSTNode>();
+        if (order == 0)
+            answer.add(Root);
+        if (Root.LeftChild != null)
+            answer.addAll((new BST<>(Root.LeftChild)).DeepAllNodes(order));
+        if (order == 1)
+            answer.add(Root);
+        if (Root.RightChild != null)
+            answer.addAll((new BST<>(Root.RightChild)).DeepAllNodes(order));
+        if (order == 2)
+            answer.add(Root);
+        return answer;
+    }
     public int Count()
     {
         return Count; // количество узлов в дереве
