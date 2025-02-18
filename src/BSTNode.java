@@ -253,8 +253,21 @@ class BST<T>
         answer.stream().forEach(list -> list.addFirst(root));
         return childMax + root.NodeValue;
     }
+    public boolean IsReversed(BST<T> otherTree)
+    {
+        if (Root == null && otherTree.Root == null)
+            return true;
+        if (Root == null || otherTree.Root == null)
+            return false;
+        var leftSubtreeThis = new BST<>(Root.LeftChild);
+        var rightSubtreeThis = new BST<>(Root.RightChild);
+        var leftSubtreeOther = new BST<>(otherTree.Root.LeftChild);
+        var rightSubtreeOther = new BST<>(otherTree.Root.RightChild);
+        return leftSubtreeThis.IsReversed(rightSubtreeOther) &&
+                rightSubtreeThis.IsReversed(leftSubtreeOther);
+    }
     public boolean IsSymmetrical() {
-        return false;
+        return IsReversed(this);
     }
     public ArrayList<BSTNode> WideAllNodes() {
         if (Root == null)

@@ -218,7 +218,75 @@ public class BSTAdditionalTasksTest {
         assertEquals(1, result.size(), "Должен быть один путь после удаления");
         assertArrayEquals(new int[]{10, 20}, result.getFirst().stream().mapToInt(n -> n.NodeKey).toArray(), "Путь должен быть 10 -> 20");
     }
-}
 
+    @Test
+    public void testIsSymmetrical_EmptyTree() {
+        var tree = new BST<String>(null);  // Пустое дерево
+        assertTrue(tree.IsSymmetrical(), "Пустое дерево должно быть симметричным.");
+    }
+
+    @Test
+    public void testIsSymmetrical_SingleNode() {
+        var tree = new BST<String>(null);  // Пустое дерево
+        tree.AddKeyValue(10, "Root");  // Добавляем корень
+
+        assertTrue(tree.IsSymmetrical(), "Дерево с одним узлом должно быть симметричным.");
+    }
+
+    @Test
+    public void testIsSymmetrical_SymmetricalTree() {
+        var tree = new BST<String>(null);  // Пустое дерево
+        tree.AddKeyValue(10, "Root");  // Добавляем корень
+        tree.AddKeyValue(5, "Left");  // Добавляем левый узел
+        tree.AddKeyValue(15, "Right");  // Добавляем правый узел
+        tree.AddKeyValue(3, "LeftLeft");  // Добавляем левый потомок левого узла
+        tree.AddKeyValue(7, "LeftRight");  // Добавляем правый потомок левого узла
+        tree.AddKeyValue(13, "RightLeft");  // Добавляем левый потомок правого узла
+        tree.AddKeyValue(17, "RightRight");  // Добавляем правый потомок правого узла
+
+        assertTrue(tree.IsSymmetrical(), "Это симметричное дерево, метод должен вернуть true.");
+    }
+
+    @Test
+    public void testIsSymmetrical_AsymmetricalTree() {
+        var tree = new BST<String>(null);  // Пустое дерево
+        tree.AddKeyValue(10, "Root");  // Добавляем корень
+        tree.AddKeyValue(5, "Left");  // Добавляем левый узел
+        tree.AddKeyValue(15, "Right");  // Добавляем правый узел
+        tree.AddKeyValue(3, "LeftLeft");  // Добавляем левый потомок левого узла
+        tree.AddKeyValue(7, "LeftRight");  // Добавляем правый потомок левого узла
+        // Нет зеркальной симметрии по правой стороне дерева, например, правый потомок правого узла не добавлен
+
+        assertFalse(tree.IsSymmetrical(), "Это несимметричное дерево, метод должен вернуть false.");
+    }
+
+    @Test
+    public void testIsSymmetrical_ComplexAsymmetricalTree() {
+        var tree = new BST<String>(null);  // Пустое дерево
+        tree.AddKeyValue(10, "Root");  // Добавляем корень
+        tree.AddKeyValue(5, "Left");  // Добавляем левый узел
+        tree.AddKeyValue(20, "Right");  // Добавляем правый узел
+        tree.AddKeyValue(2, "LeftLeft");  // Добавляем левый потомок левого узла
+        tree.AddKeyValue(6, "LeftRight");  // Добавляем правый потомок левого узла
+        tree.AddKeyValue(15, "RightLeft");  // Добавляем левый потомок правого узла
+        // Здесь дерево не симметрично, так как на правой стороне от корня узел "RightLeft" находится не на зеркальном месте
+
+        assertFalse(tree.IsSymmetrical(), "Это несимметричное дерево, метод должен вернуть false.");
+    }
+
+    @Test
+    public void testIsSymmetrical_SymmetricalTreeWithUniqueKeys() {
+        var tree = new BST<String>(null);  // Пустое дерево
+        tree.AddKeyValue(10, "Root");  // Добавляем корень
+        tree.AddKeyValue(5, "Left");  // Добавляем левый узел
+        tree.AddKeyValue(15, "Right");  // Добавляем правый узел
+        tree.AddKeyValue(3, "LeftLeft");  // Добавляем левый потомок левого узла
+        tree.AddKeyValue(7, "LeftRight");  // Добавляем правый потомок левого узла
+        tree.AddKeyValue(13, "RightLeft");  // Добавляем левый потомок правого узла
+        tree.AddKeyValue(17, "RightRight");  // Добавляем правый потомок правого узла
+
+        assertTrue(tree.IsSymmetrical(), "Это симметричное дерево, метод должен вернуть true.");
+    }
+}
 
 
