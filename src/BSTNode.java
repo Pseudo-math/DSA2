@@ -266,9 +266,12 @@ class BST<T>
         return leftSubtreeThis.IsReversed(rightSubtreeOther) &&
                 rightSubtreeThis.IsReversed(leftSubtreeOther);
     }
-    public boolean IsSymmetrical() {
+
+    public boolean IsSymmetrical()
+    {
         return IsReversed(this);
     }
+
     public ArrayList<BSTNode> WideAllNodes() {
         if (Root == null)
             return new ArrayList<>();
@@ -294,15 +297,15 @@ class BST<T>
         if (Root == null)
             return new ArrayList<>();
         var answer = new ArrayList<BSTNode>();
-        if (order == 0)
+        if (order == 2)
             answer.add(Root);
         if (Root.LeftChild != null)
             answer.addAll((new BST<>(Root.LeftChild)).DeepAllNodes(order));
-        if (order == 1)
+        if (order == 0)
             answer.add(Root);
         if (Root.RightChild != null)
             answer.addAll((new BST<>(Root.RightChild)).DeepAllNodes(order));
-        if (order == 2)
+        if (order == 1)
             answer.add(Root);
         return answer;
     }
@@ -311,4 +314,16 @@ class BST<T>
         return Count; // количество узлов в дереве
     }
 
+    public void InvertTree()
+    {
+        if (Root == null)
+            return;
+        var leftChild = Root.LeftChild;
+        Root.LeftChild = Root.RightChild;
+        Root.RightChild = leftChild;
+        if (Root.LeftChild != null)
+            (new BST<>(Root.LeftChild)).InvertTree();
+        if (Root.RightChild != null)
+            (new BST<>(Root.RightChild)).InvertTree();
+    }
 }

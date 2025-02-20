@@ -65,9 +65,9 @@ public class BFSAndDFSTest {
     @Test
     public void testDFSEmptyTree() {
         BST<String> tree = new BST<>(null);  // Пустое дерево
-        var resultPreorder = tree.DeepAllNodes(0);
-        var resultInorder = tree.DeepAllNodes(1);
-        var resultPostorder = tree.DeepAllNodes(2);
+        var resultPreorder = tree.DeepAllNodes(2);
+        var resultInorder = tree.DeepAllNodes(0);
+        var resultPostorder = tree.DeepAllNodes(1);
 
         assertTrue(resultPreorder.isEmpty(), "Дерево пустое, результат preorder должен быть пустым.");
         assertTrue(resultInorder.isEmpty(), "Дерево пустое, результат inorder должен быть пустым.");
@@ -79,9 +79,9 @@ public class BFSAndDFSTest {
         var tree = new BST<String>(null);  // Пустое дерево
         tree.AddKeyValue(10, "Root");  // Добавляем корень
 
-        var resultPreorder = tree.DeepAllNodes(0);
-        var resultInorder = tree.DeepAllNodes(1);
-        var resultPostorder = tree.DeepAllNodes(2);
+        var resultPreorder = tree.DeepAllNodes(2);
+        var resultInorder = tree.DeepAllNodes(0);
+        var resultPostorder = tree.DeepAllNodes(1);
 
         assertEquals(1, resultPreorder.size(), "Дерево содержит один узел, результат preorder должен содержать один элемент.");
         assertEquals("Root", resultPreorder.get(0).NodeValue, "Значение единственного узла должно быть 'Root'.");
@@ -100,9 +100,9 @@ public class BFSAndDFSTest {
         tree.AddKeyValue(5, "Left");  // Добавляем левый узел
         tree.AddKeyValue(15, "Right");  // Добавляем правый узел
 
-        var resultPreorder = tree.DeepAllNodes(0);
-        var resultInorder = tree.DeepAllNodes(1);
-        var resultPostorder = tree.DeepAllNodes(2);
+        var resultPreorder = tree.DeepAllNodes(2);
+        var resultInorder = tree.DeepAllNodes(0);
+        var resultPostorder = tree.DeepAllNodes(1);
 
         // Preorder: Корень, Левый, Правый
         assertEquals(3, resultPreorder.size(), "Дерево должно содержать 3 узла в preorder.");
@@ -134,9 +134,9 @@ public class BFSAndDFSTest {
         tree.AddKeyValue(13, "RightLeft");  // Добавляем левый потомок правого узла
         tree.AddKeyValue(17, "RightRight");  // Добавляем правый потомок правого узла
 
-        var resultPreorder = tree.DeepAllNodes(0);
-        var resultInorder = tree.DeepAllNodes(1);
-        var resultPostorder = tree.DeepAllNodes(2);
+        var resultPreorder = tree.DeepAllNodes(2);
+        var resultInorder = tree.DeepAllNodes(0);
+        var resultPostorder = tree.DeepAllNodes(1);
 
         // Preorder: Корень, Левый, Левый-Левый, Левый-Правый, Правый, Правый-Левый, Правый-Правый
         assertEquals(7, resultPreorder.size(), "Дерево должно содержать 7 узлов в preorder.");
