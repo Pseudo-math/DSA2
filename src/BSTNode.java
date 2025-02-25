@@ -326,4 +326,35 @@ class BST<T>
         if (Root.RightChild != null)
             (new BST<>(Root.RightChild)).InvertTree();
     }
+    public int LevelOfMaxSum()
+    {
+        if (Root == null)
+            return 0;
+
+        int currentMax = Root.NodeKey;
+        int currentLevel = 1;
+
+        Queue<BSTNode<T>> notVisitedCurrentLvl = new LinkedList<>();
+        Queue<BSTNode<T>> notVisitedNextLvl = new LinkedList<>();
+        notVisitedCurrentLvl.add(Root);
+
+        for (int level = 1; !notVisitedCurrentLvl.isEmpty(); level++){
+            int sum = 0;
+            while (!notVisitedCurrentLvl.isEmpty()) {
+                var current = notVisitedCurrentLvl.poll();
+                sum += current.NodeKey;
+                if (current.LeftChild != null)
+                    notVisitedNextLvl.add(current.LeftChild);
+                if (current.RightChild != null)
+                    notVisitedNextLvl.add(current.RightChild);
+            }
+            if (sum > currentMax) {
+                currentMax = sum;
+                currentLevel = level;
+            }
+            notVisitedCurrentLvl = notVisitedNextLvl;
+            notVisitedNextLvl = new LinkedList<>();
+        }
+        return currentLevel;
+    }
 }

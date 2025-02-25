@@ -1,8 +1,21 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 
 public class BFSAndDFSTest {
+    private BST<String> bst;
+
+    @BeforeEach
+    void setUp() {
+        bst = new BST<>(new BSTNode<>(10, "Root", null));
+        bst.AddKeyValue(5, "Left");
+        bst.AddKeyValue(15, "Right");
+        bst.AddKeyValue(3, "Left.Left");
+        bst.AddKeyValue(7, "Left.Right");
+        bst.AddKeyValue(13, "Right.Left");
+        bst.AddKeyValue(18, "Right.Right");
+    }
 
     @Test
     public void testBFSEmptyTree() {
@@ -167,5 +180,77 @@ public class BFSAndDFSTest {
         assertEquals("RightRight", resultPostorder.get(4).NodeValue, "Пятый элемент в postorder должен быть 'RightRight'.");
         assertEquals("Right", resultPostorder.get(5).NodeValue, "Шестой элемент в postorder должен быть 'Right'.");
         assertEquals("Root", resultPostorder.get(6).NodeValue, "Седьмой элемент в postorder должен быть 'Root'.");
+    }
+
+    @Test
+    void testInvertTreeEmptyTree() {
+        BST<String> emptyTree = new BST<>(null);
+        emptyTree.InvertTree();
+        assertNull(emptyTree.Root);
+    }
+
+    @Test
+    void testInvertTreeSingleElement() {
+        BST<String> singleNodeTree = new BST<>(new BSTNode<>(1, "Single", null));
+        singleNodeTree.InvertTree();
+        assertEquals(1, singleNodeTree.Root.NodeKey);
+        assertNull(singleNodeTree.Root.LeftChild);
+        assertNull(singleNodeTree.Root.RightChild);
+    }
+
+    @Test
+    void testInvertTree() {
+        bst.InvertTree();
+
+        assertEquals(15, bst.Root.LeftChild.NodeKey);
+        assertEquals(5, bst.Root.RightChild.NodeKey);
+        assertEquals(18, bst.Root.LeftChild.LeftChild.NodeKey);
+        assertEquals(13, bst.Root.LeftChild.RightChild.NodeKey);
+        assertEquals(7, bst.Root.RightChild.LeftChild.NodeKey);
+        assertEquals(3, bst.Root.RightChild.RightChild.NodeKey);
+    }
+
+    @Test
+    void testInvertTreeUnbalancedTree() {
+        BST<String> unbalancedTree = new BST<>(new BSTNode<>(10, "Root", null));
+        unbalancedTree.AddKeyValue(5, "Left");
+        unbalancedTree.AddKeyValue(1, "Left.Left");
+        unbalancedTree.InvertTree();
+        assertEquals(5, unbalancedTree.Root.RightChild.NodeKey);
+        assertEquals(1, unbalancedTree.Root.RightChild.RightChild.NodeKey);
+    }
+
+    @Test
+    void testLevelOfMaxSumEmptyTree() {
+        BST<String> emptyTree = new BST<>(null);
+        assertEquals(0, emptyTree.LevelOfMaxSum());
+    }
+
+    @Test
+    void testLevelOfMaxSumSingleElement() {
+        BST<String> singleNodeTree = new BST<>(new BSTNode<>(42, "Single", null));
+        assertEquals(1, singleNodeTree.LevelOfMaxSum());
+    }
+
+    @Test
+    void testLevelOfMaxSum() {
+        assertEquals(3, bst.LevelOfMaxSum());
+    }
+    @Test
+    void testLevelOfMaxSumUnbalancedTree() {
+        BST<String> unbalancedTree = new BST<>(new BSTNode<>(10, "Root", null));
+        unbalancedTree.AddKeyValue(5, "Left");
+        unbalancedTree.AddKeyValue(1, "Left.Left");
+        assertEquals(1, unbalancedTree.LevelOfMaxSum());
+    }
+
+    @Test
+    void testLevelOfMaxSumLargeTree() {
+        BST<String> largeTree = new BST<>(new BSTNode<>(50, "Root", null));
+        for (int i = 1; i <= 10; i++) {
+            largeTree.AddKeyValue(50 - i, "Left" + i);
+            largeTree.AddKeyValue(50 + i, "Right" + i);
+        }
+        assertEquals(2, largeTree.LevelOfMaxSum());
     }
 }
