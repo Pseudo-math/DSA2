@@ -29,9 +29,9 @@ class aBST
             return  -1;
         if (WhereNeedAdd > 0)
             return WhereNeedAdd;
-        if (WhereNeedAdd < 0)
-        {
+        if (WhereNeedAdd < 0) {
             Tree[-WhereNeedAdd] = key;
+            return -WhereNeedAdd;
         }
         if (Tree[0] == null)
             Tree[0] = key;

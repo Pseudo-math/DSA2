@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.stream.*;
+
 
 class aBSTTest {
     aBST tree;
@@ -64,7 +64,9 @@ class aBSTTest {
         tree.AddKey(3);
         tree.AddKey(6);
         tree.AddKey(5);
-        tree.AddKey(7);
+
+        Integer index = tree.AddKey(7);
+        assertEquals(index, 6);
 
         Integer[] expected = {4, 2, 6, 1, 3, 5, 7};
 
