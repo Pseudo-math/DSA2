@@ -1,3 +1,4 @@
+import java.awt.desktop.AppReopenedEvent;
 import java.io.*;
 import java.util.*;
 import java.util.stream.*;
@@ -356,5 +357,44 @@ class BST<T>
             notVisitedNextLvl = new LinkedList<>();
         }
         return currentLevel;
+    }
+    private void BrokenAddKey(BSTNode<T> whereNeedAdd, T val, boolean toLeft) {
+        if (whereNeedAdd == null || Root == null){
+            Root = new BSTNode<>(0, val, null);
+            return;
+        }
+        var addingNode = new BSTNode<>(0, val, whereNeedAdd);
+        if (toLeft)
+            whereNeedAdd.LeftChild = addingNode;
+        else
+            whereNeedAdd.RightChild = addingNode;
+    }
+    public BST<Integer> RecoveredTree(ArrayList<Integer> preorder, ArrayList<Integer> inorder) {
+        if (preorder.isEmpty())
+            return new BST<Integer>(null);
+        var tree = new BST<Integer>(null);
+        tree.BrokenAddKey(null, preorder.getFirst(), false);
+        RecoveredTreeHelp(tree, tree.Root, preorder, inorder);
+        return tree;
+    }
+    public void RecoveredTreeHelp(BST<Integer> tree, BSTNode<Integer> father, List<Integer> preorder, List<Integer> inorder ){
+        if (preorder.isEmpty())
+            return;
+        int rootValue = preorder.getFirst();
+        int leftLength = inorder.indexOf(rootValue);
+        if (leftLength > 0) {
+            List<Integer> preorderForLeftSon = preorder.subList(1, leftLength + 1);
+            List<Integer> inorderForLeftSon = inorder.subList(0, leftLength);
+            int leftSonValue = preorderForLeftSon.getFirst();
+            tree.BrokenAddKey(father, leftSonValue, true);
+            RecoveredTreeHelp(tree, father.LeftChild, preorderForLeftSon, inorderForLeftSon);
+        }
+        if (leftLength + 1 < preorder.size()) {
+            List<Integer> preorderForRightSon = preorder.subList(leftLength + 1, preorder.size());
+            List<Integer> inorderForRightSon = inorder.subList(leftLength + 1, inorder.size());
+            int rightSonValue = preorderForRightSon.getFirst();
+            tree.BrokenAddKey(father, rightSonValue, false);
+            RecoveredTreeHelp(tree,  father.RightChild, preorderForRightSon, inorderForRightSon);
+        }
     }
 }

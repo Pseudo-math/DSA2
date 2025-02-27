@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.ArrayList;
+import java.util.*;
 
 public class BFSAndDFSTest {
     private BST<String> bst;
@@ -252,5 +252,73 @@ public class BFSAndDFSTest {
             largeTree.AddKeyValue(50 + i, "Right" + i);
         }
         assertEquals(2, largeTree.LevelOfMaxSum());
+    }
+    g
+    @Test
+    void testRecoveredTree() {
+        // Исходные данные
+        ArrayList<Integer> preorder = new ArrayList<>(List.of(1, 2, 4, 5, 3, 6, 7));
+        ArrayList<Integer> inorder = new ArrayList<>(List.of(4, 2, 5, 1, 6, 3, 7));
+
+        // Восстанавливаем дерево
+        BST<Integer> tree = new BST<>(null);
+        tree = tree.RecoveredTree(preorder, inorder);
+
+        // Проверка структуры дерева
+        assertNotNull(tree.Root, "Корень дерева не должен быть null");
+        assertEquals(Integer.valueOf(1), tree.Root.NodeValue, "Корень должен быть с значением 1");
+
+        // Проверка левого поддерева
+        assertNotNull(tree.Root.LeftChild, "Левый потомок корня не должен быть null");
+        assertEquals(Integer.valueOf(2), tree.Root.LeftChild.NodeValue, "Левый потомок корня должен быть с значением 2");
+
+        // Проверка правого поддерева
+        assertNotNull(tree.Root.RightChild, "Правый потомок корня не должен быть null");
+        assertEquals(Integer.valueOf(3), tree.Root.RightChild.NodeValue, "Правый потомок корня должен быть с значением 3");
+
+        // Проверка потомков левого узла (2)
+        assertNotNull(tree.Root.LeftChild.LeftChild, "Левый потомок узла 2 не должен быть null");
+        assertEquals(Integer.valueOf(4), tree.Root.LeftChild.LeftChild.NodeValue, "Левый потомок узла 2 должен быть с значением 4");
+
+        assertNotNull(tree.Root.LeftChild.RightChild, "Правый потомок узла 2 не должен быть null");
+        assertEquals(Integer.valueOf(5), tree.Root.LeftChild.RightChild.NodeValue, "Правый потомок узла 2 должен быть с значением 5");
+
+        // Проверка потомков правого узла (3)
+        assertNotNull(tree.Root.RightChild.LeftChild, "Левый потомок узла 3 не должен быть null");
+        assertEquals(Integer.valueOf(6), tree.Root.RightChild.LeftChild.NodeValue, "Левый потомок узла 3 должен быть с значением 6");
+
+        assertNotNull(tree.Root.RightChild.RightChild, "Правый потомок узла 3 не должен быть null");
+        assertEquals(Integer.valueOf(7), tree.Root.RightChild.RightChild.NodeValue, "Правый потомок узла 3 должен быть с значением 7");
+    }
+
+    @Test
+    void testRecoveredTreeEmpty() {
+        // Пустые входные данные
+        ArrayList<Integer> preorder = new ArrayList<>();
+        ArrayList<Integer> inorder = new ArrayList<>();
+
+        // Восстанавливаем дерево
+        BST<Integer> tree = new BST<>(null);
+        tree = tree.RecoveredTree(preorder, inorder);
+
+        // Проверяем, что дерево пустое
+        assertNull(tree.Root, "Корень дерева должен быть null для пустого ввода");
+    }
+
+    @Test
+    void testRecoveredTreeSingleNode() {
+        // Ввод с одним узлом
+        ArrayList<Integer> preorder = new ArrayList<>(List.of(1));
+        ArrayList<Integer> inorder = new ArrayList<>(List.of(1));
+
+        // Восстанавливаем дерево
+        BST<Integer> tree = new BST<>(null);
+        tree = tree.RecoveredTree(preorder, inorder);
+
+        // Проверяем, что дерево содержит только один узел
+        assertNotNull(tree.Root, "Корень дерева не должен быть null");
+        assertEquals(Integer.valueOf(1), tree.Root.NodeValue, "Корень должен быть с значением 1");
+        assertNull(tree.Root.LeftChild, "Левый потомок корня должен быть null");
+        assertNull(tree.Root.RightChild, "Правый потомок корня должен быть null");
     }
 }
