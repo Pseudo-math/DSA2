@@ -253,7 +253,7 @@ public class BFSAndDFSTest {
         }
         assertEquals(2, largeTree.LevelOfMaxSum());
     }
-    g
+
     @Test
     void testRecoveredTree() {
         // Исходные данные
