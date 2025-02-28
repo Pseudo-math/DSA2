@@ -1,3 +1,4 @@
+import java.awt.desktop.AboutEvent;
 import java.awt.desktop.AppReopenedEvent;
 import java.io.*;
 import java.util.*;
@@ -47,6 +48,7 @@ class BST<T>
 {
     BSTNode<T> Root; // корень дерева, или null
     int Count;
+    private BiConsumer<List<BSTNode<T>>, Integer> levelProcessor;
 
     public BST(BSTNode<T> node)
     {
@@ -293,7 +295,6 @@ class BST<T>
 
         return answer;
     }
-
     public ArrayList<BSTNode> DeepAllNodes(int order) {
         if (Root == null)
             return new ArrayList<>();
@@ -398,43 +399,67 @@ class BST<T>
         }
     }
 
-    private void bfs(Consumer<Queue<BSTNode<T>>> levelProcessor) {
-        if (Root == null) return;
+    // Метод для установки обработчика уровня
+    public void setLevelProcessor(BiConsumer<List<BSTNode<T>>, Integer> processor) {
+        this.levelProcessor = processor;
+    }
 
+    // Метод обхода дерева в ширину (BFS)
+    public ArrayList<BSTNode> wideAllNodes() {
+        if (Root == null)
+            return new ArrayList<>();
+
+        ArrayList<BSTNode> answer = new ArrayList<>();
         Queue<BSTNode<T>> queue = new LinkedList<>();
         queue.add(Root);
+        int level = 1; // Начинаем с первого уровня
 
         while (!queue.isEmpty()) {
-            Queue<BSTNode<T>> currentLevel = new LinkedList<>(queue);
-            queue.clear();
+            int levelSize = queue.size();
+            List<BSTNode<T>> currentLevelNodes = new ArrayList<>();
 
-            levelProcessor.accept(currentLevel);
+            for (int i = 0; i < levelSize; i++) {
+                BSTNode<T> node = queue.poll();
+                answer.add(node);
+                currentLevelNodes.add(node);
 
-            for (BSTNode<T> node : currentLevel) {
                 if (node.LeftChild != null) queue.add(node.LeftChild);
                 if (node.RightChild != null) queue.add(node.RightChild);
             }
+
+            // Если установлен обработчик уровня, применяем его к текущему уровню
+            if (levelProcessor != null) {
+                levelProcessor.accept(currentLevelNodes, level);
+            }
+            level++; // Переходим на следующий уровень
         }
+        return answer;
     }
 
+    // Метод для нахождения уровня с максимальной суммой ключей узлов
     public int levelOfMaxSum() {
         if (Root == null) return 0;
 
-        final int[] maxSum = {Root.NodeKey};
-        final int[] maxLevel = {1};
-        final int[] currentLevel = {1};
+        final int[] maxSum = {Integer.MIN_VALUE}; // Максимальная сумма
+        final int[] maxLevel = {0};              // Уровень с максимальной суммой
 
-        bfs(levelQueue -> {
+        // Устанавливаем обработчик уровня
+        setLevelProcessor((levelNodes, level) -> {
             int sum = 0;
-            for (BSTNode<T> node : levelQueue) {
+            for (BSTNode<T> node : levelNodes) {
                 sum += node.NodeKey;
             }
             if (sum > maxSum[0]) {
                 maxSum[0] = sum;
-                maxLevel[0] = currentLevel[0];
+                maxLevel[0] = level;
             }
-            currentLevel[0]++;
         });
+
+        // Выполняем обход дерева, который применит обработчик
+        wideAllNodes();
+
+        // Сбрасываем обработчик после использования
+        setLevelProcessor(null);
 
         return maxLevel[0];
     }
