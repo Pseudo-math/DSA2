@@ -2,7 +2,7 @@ import java.awt.desktop.AppReopenedEvent;
 import java.io.*;
 import java.util.*;
 import java.util.stream.*;
-
+import java.util.function.*;
 
 class BSTNode<T>
 {
@@ -377,7 +377,7 @@ class BST<T>
         RecoveredTreeHelp(tree, tree.Root, preorder, inorder);
         return tree;
     }
-    public void RecoveredTreeHelp(BST<Integer> tree, BSTNode<Integer> father, List<Integer> preorder, List<Integer> inorder ){
+    public void RecoveredTreeHelp(BST<Integer> tree, BSTNode<Integer> father, List<Integer> preorder, List<Integer> inorder ) {
         if (preorder.isEmpty())
             return;
         int rootValue = preorder.getFirst();
@@ -394,7 +394,48 @@ class BST<T>
             List<Integer> inorderForRightSon = inorder.subList(leftLength + 1, inorder.size());
             int rightSonValue = preorderForRightSon.getFirst();
             tree.BrokenAddKey(father, rightSonValue, false);
-            RecoveredTreeHelp(tree,  father.RightChild, preorderForRightSon, inorderForRightSon);
+            RecoveredTreeHelp(tree, father.RightChild, preorderForRightSon, inorderForRightSon);
         }
+    }
+
+    private void bfs(Consumer<Queue<BSTNode<T>>> levelProcessor) {
+        if (Root == null) return;
+
+        Queue<BSTNode<T>> queue = new LinkedList<>();
+        queue.add(Root);
+
+        while (!queue.isEmpty()) {
+            Queue<BSTNode<T>> currentLevel = new LinkedList<>(queue);
+            queue.clear();
+
+            levelProcessor.accept(currentLevel);
+
+            for (BSTNode<T> node : currentLevel) {
+                if (node.LeftChild != null) queue.add(node.LeftChild);
+                if (node.RightChild != null) queue.add(node.RightChild);
+            }
+        }
+    }
+
+    public int levelOfMaxSum() {
+        if (Root == null) return 0;
+
+        final int[] maxSum = {Root.NodeKey};
+        final int[] maxLevel = {1};
+        final int[] currentLevel = {1};
+
+        bfs(levelQueue -> {
+            int sum = 0;
+            for (BSTNode<T> node : levelQueue) {
+                sum += node.NodeKey;
+            }
+            if (sum > maxSum[0]) {
+                maxSum[0] = sum;
+                maxLevel[0] = currentLevel[0];
+            }
+            currentLevel[0]++;
+        });
+
+        return maxLevel[0];
     }
 }
