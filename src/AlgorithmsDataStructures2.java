@@ -17,7 +17,7 @@ public class AlgorithmsDataStructures2 {
         if (currentIndex < result.length) {
             result[currentIndex] = sorted[mid];
         }
-        generateBBSTArrayRecursive(sorted, result, start, mid - 1, 2 * currentIndex + 1);
-        generateBBSTArrayRecursive(sorted, result, mid + 1, end, 2 * currentIndex + 2);
+        generateBBSTArrayRecursive(sorted, result, start, mid - 1, 2 * currentIndex);
+        generateBBSTArrayRecursive(sorted, result, mid + 1, end, 2 * currentIndex + 1);
     }
 }
