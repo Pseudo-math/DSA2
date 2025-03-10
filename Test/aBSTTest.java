@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class aBSTTest {
     aBST tree;
+    aBST tree1;
 
     @BeforeEach
     void setUp() {
@@ -104,5 +105,91 @@ class aBSTTest {
         tree.AddKey(12);
         tree.AddKey(17);
         assertEquals(-1, tree.AddKey(8)); // Дерево полностью заполнено, вставка невозможна
+    }
+
+    @BeforeEach
+    void setUp2() {
+        tree1 = new aBST(3); // Дерево глубины 3 (макс. 15 элементов)
+        int[] values = {20, 10, 30, 5, 15, 25, 35, 2, 7, 12, 18, 22, 27, 32, 40};
+
+        for (int v : values) {
+            tree1.AddKey(v);
+        }
+    }
+
+    @Test
+    void testLCA_BothNodesExist() {
+        Integer index1 = tree1.FindKeyIndex(5);
+        Integer index2 = tree1.FindKeyIndex(15);
+        Integer expectedLCA = tree1.FindKeyIndex(10);
+
+        assertNotNull(index1);
+        assertNotNull(index2);
+        assertNotNull(expectedLCA);
+        assertEquals(expectedLCA, tree1.LCA(index1, index2));
+    }
+
+    @Test
+    void testLCA_OneNodeIsAncestor() {
+        Integer index1 = tree1.FindKeyIndex(10);
+        Integer index2 = tree1.FindKeyIndex(5);
+        Integer index3 = tree1.FindKeyIndex(20);
+
+        assertNotNull(index1);
+        assertNotNull(index2);
+        assertEquals(index3, tree1.LCA(index1, index2)); // 10 предок 5
+    }
+
+    @Test
+    void testLCA_DifferentBranches() {
+        Integer index1 = tree1.FindKeyIndex(5);
+        Integer index2 = tree1.FindKeyIndex(30);
+        Integer expectedLCA = tree1.FindKeyIndex(20);
+
+        assertNotNull(index1);
+        assertNotNull(index2);
+        assertNotNull(expectedLCA);
+        assertEquals(expectedLCA, tree1.LCA(index1, index2));
+    }
+
+    @Test
+    void testLCA_NodesDoNotExist() {
+        Integer index1 = tree1.FindKeyIndex(100);
+        Integer index2 = tree1.FindKeyIndex(200);
+
+        assertNull(index1);
+        assertNull(index2);
+        assertNull(tree1.LCA(100, 200));
+    }
+
+    @Test
+    void testLCA_OneNodeDoesNotExist() {
+        Integer index1 = tree1.FindKeyIndex(5);
+        Integer index2 = tree1.FindKeyIndex(100);
+
+        assertNotNull(index1);
+        assertNull(index2);
+        assertNull(tree1.LCA(index1, 100));
+    }
+
+    @Test
+    void testLCA_RootAsLCA() {
+        Integer index1 = tree1.FindKeyIndex(5);
+        Integer index2 = tree1.FindKeyIndex(35);
+        Integer expectedLCA = tree1.FindKeyIndex(20);
+
+        assertNotNull(index1);
+        assertNotNull(index2);
+        assertNotNull(expectedLCA);
+        assertEquals(expectedLCA, tree1.LCA(index1, index2));
+    }
+
+    @Test
+    void testLCA_SameNode() {
+        Integer index = tree1.FindKeyIndex(10);
+        Integer indexOfParent = tree1.FindKeyIndex(20);
+
+        assertNotNull(index);
+        assertEquals(indexOfParent, tree1.LCA(index, index));
     }
 }

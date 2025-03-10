@@ -38,4 +38,28 @@ class aBST
         return 0;
     }
 
+    public Integer LCA(int firstNode, int secondNode)
+    {
+        if (firstNode < 0 || secondNode < 0 || firstNode >= Tree.length || secondNode >= Tree.length)
+            return null;
+        if (firstNode == 0 || secondNode == 0)
+            return null;
+        int leftNode =  Tree[firstNode] <= Tree[secondNode] ? firstNode : secondNode;
+        int rightNode =  Tree[firstNode] >= Tree[secondNode] ? firstNode : secondNode;
+
+        return LCAHelper(0, leftNode, rightNode);
+    }
+    public Integer LCAHelper(int root, int leftNode, int rightNode)
+    {
+        int leftValue = Tree[leftNode];
+        int rightValue = Tree[rightNode];
+        int rootValue = Tree[root];
+
+        if (leftValue < rootValue && rootValue < rightValue)
+            return root;
+        if ((leftNode - 1) / 2 == root || (rightNode - 1) / 2 == root)
+            return root;
+        root = rightValue < rootValue ? 2 * root + 1: 2 * root + 2;
+        return LCAHelper(root, leftNode, rightNode);
+    }
 }
