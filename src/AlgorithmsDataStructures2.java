@@ -40,7 +40,7 @@ public class AlgorithmsDataStructures2 {
         result.add(bbstArray[index]);
         recoverSortedList(bbstArray, 2 * index + 2, result);
     }
-    // Я создал метод для Integer[], но все null при балансировке переносит в конец, поэтому идейно подходит для int[]
+    // Я создал deleteNode метод для Integer[], но все null при балансировке переносит в конец, поэтому идейно подходит для int[]
     public static boolean deleteNode(Integer[] bbstArray, Integer valueToDelete) {
         List<Integer> elements = new ArrayList<>();
         recoverSortedList(bbstArray, 0, elements);
