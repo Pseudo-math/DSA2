@@ -124,4 +124,24 @@ class SimpleTree<T>
             (new SimpleTree<T>(currentNode)).UpdateNodesLevels();
         }
     }
+
+    public ArrayList<T> EvenTrees() {
+        ArrayList<T> result = new ArrayList<>();
+        countSubtreeSize(Root, result);
+        return result;
+    }
+
+    private int countSubtreeSize(SimpleTreeNode<T> node, ArrayList<T> result) {
+        int size = 1;
+        for (SimpleTreeNode<T> child : node.Children) {
+            int childSize = countSubtreeSize(child, result);
+            if (childSize % 2 == 0) {
+                result.add(node.NodeValue);
+                result.add(child.NodeValue);
+            } else {
+                size += childSize;
+            }
+        }
+        return size;
+    }
 }
