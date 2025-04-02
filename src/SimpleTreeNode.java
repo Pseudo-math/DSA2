@@ -127,21 +127,25 @@ class SimpleTree<T>
 
     public ArrayList<T> EvenTrees() {
         ArrayList<T> result = new ArrayList<>();
+        if (Root == null) return result;
         countSubtreeSize(Root, result);
         return result;
     }
 
     private int countSubtreeSize(SimpleTreeNode<T> node, ArrayList<T> result) {
-        int size = 1;
+        if (node.Children == null) return 1; // Лист, возвращаем 1
+
+        int size = 1; // Включаем текущий узел
         for (SimpleTreeNode<T> child : node.Children) {
             int childSize = countSubtreeSize(child, result);
+            size += childSize;
+
             if (childSize % 2 == 0) {
                 result.add(node.NodeValue);
                 result.add(child.NodeValue);
-            } else {
-                size += childSize;
             }
         }
         return size;
     }
+
 }

@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -476,8 +476,69 @@ class SimpleTreeTest {
         tree.AddChild(node8, node9);
         tree.AddChild(node8, node10);
 
-        // Проверка результата EvenTrees
-        List<Integer> expected = Arrays.asList(1, 3, 3, 6);
-        assertEquals(expected, tree.EvenTrees());
+        // Ожидаемый результат в виде списка пар
+        List<List<Integer>> expectedPairs = List.of(
+                List.of(1, 3),
+                List.of(3, 6)
+        );
+
+        // Фактический результат
+        List<Integer> actual = tree.EvenTrees();
+
+        // Преобразуем в список пар
+        List<List<Integer>> actualPairs = new ArrayList<>();
+        for (int i = 0; i < actual.size(); i += 2) {
+            actualPairs.add(List.of(actual.get(i), actual.get(i + 1)));
+        }
+
+        // Проверяем, что множества пар совпадают
+        assertEquals(new HashSet<>(expectedPairs), new HashSet<>(actualPairs));
     }
+    @Test
+    void testEvenTreesFromImage() {
+        // Создание узлов
+        SimpleTreeNode<Integer> root = new SimpleTreeNode<>(1, null);
+        SimpleTree<Integer> tree = new SimpleTree<>(root);
+
+        SimpleTreeNode<Integer> node2 = new SimpleTreeNode<>(2, root);
+        SimpleTreeNode<Integer> node3 = new SimpleTreeNode<>(3, root);
+        SimpleTreeNode<Integer> node6 = new SimpleTreeNode<>(6, root);
+        SimpleTreeNode<Integer> node5 = new SimpleTreeNode<>(5, node2);
+        SimpleTreeNode<Integer> node7 = new SimpleTreeNode<>(7, node2);
+        SimpleTreeNode<Integer> node4 = new SimpleTreeNode<>(4, node3);
+        SimpleTreeNode<Integer> node8 = new SimpleTreeNode<>(8, node6);
+        SimpleTreeNode<Integer> node9 = new SimpleTreeNode<>(9, node8);
+        SimpleTreeNode<Integer> node10 = new SimpleTreeNode<>(10, node8);
+
+        // Добавление узлов в дерево
+        tree.AddChild(root, node2);
+        tree.AddChild(root, node3);
+        tree.AddChild(root, node6);
+        tree.AddChild(node2, node5);
+        tree.AddChild(node2, node7);
+        tree.AddChild(node3, node4);
+        tree.AddChild(node6, node8);
+        tree.AddChild(node8, node9);
+        tree.AddChild(node8, node10);
+
+        // Ожидаемый результат (список пар вершин, между которыми удаляются рёбра)
+        List<List<Integer>> expectedPairs = List.of(
+                List.of(1, 3),
+                List.of(1, 6)
+        );
+
+        // Фактический результат
+        List<Integer> actual = tree.EvenTrees();
+
+        // Преобразуем в список пар
+        List<List<Integer>> actualPairs = new ArrayList<>();
+        for (int i = 0; i < actual.size(); i += 2) {
+            actualPairs.add(List.of(actual.get(i), actual.get(i + 1)));
+        }
+
+        // Проверяем, что множества пар совпадают
+        assertEquals(new HashSet<>(expectedPairs), new HashSet<>(actualPairs));
+    }
+
+
 }
